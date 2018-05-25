@@ -46,9 +46,17 @@ module Furik
     method_option :since, type: :numeric, aliases: '-d', default: 0
     method_option :from, type: :string, aliases: '-f', default: Date.today.to_s
     method_option :to, type: :string, aliases: '-t', default: Date.today.to_s
+    method_option :weekly, type: :boolean, aliases: '-w', default: false
     def activity
-      from = Date.parse(options[:from])
-      to   = Date.parse(options[:to])
+      if options[:weekly]
+        today = Date.today
+        from = today - (today.wday - 1)
+        to   = today - (today.wday - 5)
+      else
+        from = Date.parse(options[:from])
+        to   = Date.parse(options[:to])
+      end
+
       since = options[:since]
 
       diff = (to - from).to_i
